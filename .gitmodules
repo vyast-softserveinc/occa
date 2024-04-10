@@ -1,0 +1,3 @@
+[submodule "occa-transpiler"]
+	path = occa-transpiler
+	url = https://github.com/libocca/occa-transpiler.git

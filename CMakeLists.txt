@@ -73,8 +73,7 @@ if (OCCA_TRANSPILER)
     include(cmake/CPM.cmake)
     CPMAddPackage(
         NAME occa-transpiler
-        GITHUB_REPOSITORY libocca/occa-transpiler
-        GIT_TAG c761972e9158fd29ba1093339c81043a22b78427
+        SOURCE_DIR ${CMAKE_SOURCE_DIR}/occa-transpiler
         OPTIONS "TRANSPILER_TESTS OFF"
     )
 endif()
