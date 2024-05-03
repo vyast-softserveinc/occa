@@ -70,7 +70,7 @@ endif()
 
 # INFO: order is important, deps should not apply compiler flags
 if (OCCA_TRANSPILER)
-    include(cmake/CPM.cmake)
+    include(cmake/CPM_0.38.6.cmake)
     include(cmake/GitSubmodules.cmake)
 
     init_submodules(${PROJECT_SOURCE_DIR})
