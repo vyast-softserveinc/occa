@@ -4,6 +4,14 @@
 namespace occa {
 namespace transpiler {
 
+std::string getKernelHash(const json &kernelProp) {
+    auto hashStr = kernelProp.get<std::string>("hash");
+    if(hashStr.empty()) {
+        throw std::runtime_error("kernel proerties does not contain hash entry");
+    }
+    return hashStr;
+}
+
 std::vector<std::string> buildDefines(const json &kernelProp) {
     const json &defines = kernelProp["defines"];
     if (!defines.isObject()) {

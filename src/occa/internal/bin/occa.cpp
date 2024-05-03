@@ -168,6 +168,7 @@ namespace occa {
 
             auto defines = transpiler::buildDefines(kernelProps);
             auto includes = transpiler::buildIncludes(kernelProps);
+            auto hash = transpiler::getKernelHash(kernelProps);
 
             std::filesystem::path sourcePath = io::expandFilename(filename);
             auto sourceCode = oklt::util::readFileAsStr(sourcePath);
@@ -177,12 +178,12 @@ namespace occa {
             }
             oklt::UserInput input {
                 .backend = transpiler->second,
-                .astProcType = oklt::AstProcessorType::OKL_WITH_SEMA,
                 .source = std::move(sourceCode.value()),
                 .headers = {},
                 .sourcePath = sourcePath,
-                .inlcudeDirectories = std::move(includes),
-                .defines = std::move(defines)
+                .includeDirectories = std::move(includes),
+                .defines = std::move(defines),
+                .hash = std::move(hash)
             };
             auto result = normalizeAndTranspile(std::move(input));
 

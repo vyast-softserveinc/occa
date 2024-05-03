@@ -40,6 +40,9 @@ int main(int argc, const char **argv) {
   // Capture the array b
   occa::scope scope({
     {"b", array_b}
+  },
+  {
+    {"transpiler-version", 3},
   });
 
   occa::array<float> array_ab = array_a.map(OCCA_FUNCTION(

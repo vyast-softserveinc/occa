@@ -71,6 +71,10 @@ endif()
 # INFO: order is important, deps should not apply compiler flags
 if (OCCA_TRANSPILER)
     include(cmake/CPM.cmake)
+    include(cmake/GitSubmodules.cmake)
+
+    init_submodules(${PROJECT_SOURCE_DIR})
+
     CPMAddPackage(
         NAME occa-transpiler
         SOURCE_DIR ${CMAKE_SOURCE_DIR}/occa-transpiler

@@ -96,12 +96,12 @@ namespace occa {
       }
       oklt::UserInput input {
           .backend = oklt::TargetBackend::SERIAL,
-          .astProcType = oklt::AstProcessorType::OKL_WITH_SEMA,
           .source = std::move(sourceCode.value()),
           .headers = {},
           .sourcePath = sourcePath,
-          .inlcudeDirectories = std::move(includes),
-          .defines = std::move(defines)
+          .includeDirectories = std::move(includes),
+          .defines = std::move(defines),
+          .hash = "",
       };
       auto result = normalizeAndTranspile(std::move(input));
       if(!result) {
