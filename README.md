@@ -48,6 +48,7 @@ Mission critical computational science and engineering applications from the pub
  - SYCL 2020 or later
  - OpenCL 2.0 or later
  - OpenMP 4.0 or later
+ - C++ support with occa-transpiler dependecy
 
 ## Build, Test, Install
 
@@ -67,6 +68,14 @@ $ cmake --install build --prefix install
 
 If dependencies are installed in a non-standard location, set the corresponding [environment variable](INSTALL.md#dependency-paths) to this path. 
 
+For building with C++ support/occa-transpiler: 
+```shell
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release -DOCCA_TRANSPILER=ON ..
+$ cmake --build build --parallel <number-of-threads> 
+$ cmake --install build --prefix install
+```
 
 ## Use
 
@@ -87,6 +96,18 @@ target_link_libraries(downstream-app PRIVATE OCCA::libocca)
 
 add_library(downstream-lib ...)
 target_link_libraries(downstream-lib PUBLIC OCCA::libocca)
+```
+
+For usage the clang C++ full support it needs just to provide the transpiler-version parameter to the build kernel properties
+
+Example:
+```c++
+  occa::json buildProps({
+      {"transpiler-version", 3}
+  });
+
+  // Compile the kernel at run-time
+  occa::kernel addVectors = device.buildKernel("source_file.okl","kernel_function", buildProps);
 ```
 
 ### Command-line Interface
