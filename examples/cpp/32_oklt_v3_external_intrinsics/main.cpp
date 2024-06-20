@@ -2,9 +2,9 @@
 #include <occa.hpp>
 #include <vector>
 #include "constants.h"
+#include "occa/internal/utils/sys.hpp"
 #include <numeric>
 #include <filesystem>
-#include <chrono>
 
 std::vector<float> buildData(std::size_t size,
                              float value)
@@ -32,7 +32,7 @@ occa::json getDeviceOptions(int argc, const char **argv) {
 
 int main(int argc, const char **argv) {
 
-    constexpr const int BLOCKS = 32;
+    constexpr const int BLOCKS = 1024;
     const int VECTOR_SIZE = THREADS_PER_BLOCK * BLOCKS;
     const float SCALE_VALUE = 2.0f;
     occa::json deviceOpts = getDeviceOptions(argc, argv);
@@ -53,12 +53,9 @@ int main(int argc, const char **argv) {
   occa::kernel scaleVectorSyncFunc = device.buildKernel("scaleVec.okl", "scaleVectorSync", buildProps);
 
   deviceBuffer.copyFrom(buffer.data(), buffer.size());
-  //enter
-
   scaleVectorAsyncFunc(deviceBuffer,
                   SCALE_VALUE,
                   static_cast<int>(deviceBuffer.size()));
-  //leave
   std::vector<float> checkBuffer(buffer.size(), 0.0f);
   deviceBuffer.copyTo(checkBuffer.data(), checkBuffer.size());
 
@@ -74,32 +71,29 @@ int main(int argc, const char **argv) {
   std::cout << "Validation step is finished" << std::endl;
 
   constexpr const int BENCHMARK_SHOTS = 30;
-  std::chrono::duration<double, std::milli> asyncTotal {0.0};
-  std::chrono::duration<double, std::milli> syncTotal {0.0};
+  double asyncTotal = 0.0;
+  double syncTotal = 0.0;
   for(int i = 0; i < BENCHMARK_SHOTS; ++i) {
-        //deviceBuffer.copyFrom(buffer.data(), buffer.size());
-
-        auto t1 = std::chrono::high_resolution_clock::now();
+        auto t1 = occa::sys::currentTime();
         scaleVectorAsyncFunc(deviceBuffer,
                              SCALE_VALUE,
                              static_cast<int>(deviceBuffer.size()));
-        auto t2 = std::chrono::high_resolution_clock::now();
+        auto t2 = occa::sys::currentTime();
         asyncTotal += t2 - t1;
   }
 
   for( int i = 0; i < BENCHMARK_SHOTS; ++i) {
-        //deviceBuffer.copyFrom(buffer.data(), buffer.size());
-
-        auto t1 = std::chrono::high_resolution_clock::now();
+        auto t1 = occa::sys::currentTime();
         scaleVectorSyncFunc(deviceBuffer,
                              SCALE_VALUE,
                              static_cast<int>(deviceBuffer.size()));
-        auto t2 = std::chrono::high_resolution_clock::now();
+        // auto t2 = std::chrono::high_resolution_clock::now();
+        auto t2 = occa::sys::currentTime();
         syncTotal += t2 - t1;
   }
 
-  std::cout << "Average async function time: " << asyncTotal.count() / BENCHMARK_SHOTS << std::endl;
-  std::cout << "Average sync function time: " << syncTotal.count() / BENCHMARK_SHOTS << std::endl;
+  std::cout << "Average async function time: " << asyncTotal / BENCHMARK_SHOTS << std::endl;
+  std::cout << "Average sync function time: " << syncTotal / BENCHMARK_SHOTS << std::endl;
 
   return 0;
 }
