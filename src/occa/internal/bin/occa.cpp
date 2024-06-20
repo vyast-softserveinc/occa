@@ -342,6 +342,8 @@ namespace occa {
       kernelProps["mode"] = mode;
       kernelProps["defines"].asObject() += getOptionDefines(options["define"]);
       kernelProps["okl/include_paths"] = options["include-path"];
+
+      //TODO: vyast
       return runTranspiler(options, arguments, kernelProps, originalMode, mode);
     }
 
