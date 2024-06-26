@@ -62,6 +62,23 @@ std::vector<std::filesystem::path> buildIncludes(const json &kernelProp) {
     return includes;
 }
 
+std::vector<std::filesystem::path> buildUserIntrinsics(const json &kernelProp) {
+    std::vector<std::filesystem::path> intrinsics;
+    json userIntrinsics = kernelProp.get("external-intrinsics", json{});
+    if(userIntrinsics.isArray()) {
+        jsonArray pathArray = userIntrinsics.array();
+        const int pathCount = (int) pathArray.size();
+        for (int i = 0; i < pathCount; ++i) {
+            json path = pathArray[i];
+            if (path.isString()) {
+                intrinsics.push_back(std::filesystem::path(path.string()));
+            }
+        }
+    }
+    return intrinsics;
+}
+
+
 void makeMetadata(lang::sourceMetadata_t &sourceMetadata,
                   const std::string &jsonStr)
 {
@@ -122,6 +139,7 @@ bool Transpiler::run(const std::string &filename,
     auto defines = transpiler::buildDefines(kernelProps);
     auto includes = transpiler::buildIncludes(kernelProps);
     auto hash = transpiler::getKernelHash(kernelProps);
+    auto userIntrinsics = transpiler::buildUserIntrinsics(kernelProps);
 
     oklt::UserInput input {
         .backend = backend->second,
@@ -130,7 +148,8 @@ bool Transpiler::run(const std::string &filename,
         .sourcePath = expandedFile,
         .includeDirectories = std::move(includes),
         .defines = std::move(defines),
-        .hash = std::move(hash)
+        .hash = std::move(hash),
+        .userIntrinsics = std::move(userIntrinsics),
     };
     auto result = normalizeAndTranspile(std::move(input));
     if(!result) {

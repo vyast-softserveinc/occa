@@ -1,0 +1,45 @@
+#include "constants.h"
+#include "custom_intrinsics/api.h"
+
+//INFO: inputSize must be devideable by THREADS_PER_BLOCK
+@kernel void scaleVectorAsync(@restrict float *vec,
+                         const float scaler,
+                         int inputSize)
+{
+    @outer(0) for (int block_idx = 0; block_idx < inputSize / THREADS_PER_BLOCK; ++block_idx) {
+        @shared float blockInput[THREADS_PER_BLOCK];
+        @inner(0) for(int thread_idx = 0; thread_idx < THREADS_PER_BLOCK; ++thread_idx) {
+
+            int global_idx = block_idx * THREADS_PER_BLOCK + thread_idx;
+
+            okl_memcpy_async(&blockInput[thread_idx], &vec[global_idx], sizeof(float));
+
+            okl_pipeline_commit();
+            okl_pipeline_wait_prior(0);
+            float scaled = blockInput[thread_idx] * scaler;
+            vec[global_idx] = scaled;
+        }
+    }
+}
+
+//INFO: inputSize must be devideable by THREADS_PER_BLOCK
+@kernel void scaleVectorSync(@restrict float *vec,
+                              const float scaler,
+                              int inputSize)
+{
+    @outer(0) for (int block_idx = 0; block_idx < inputSize / THREADS_PER_BLOCK; ++block_idx) {
+        @shared float blockInput[THREADS_PER_BLOCK];
+        @inner(0) for(int thread_idx = 0; thread_idx < THREADS_PER_BLOCK; ++thread_idx) {
+
+            int global_idx = block_idx * THREADS_PER_BLOCK + thread_idx;
+
+            blockInput[thread_idx] = vec[global_idx];
+            @barrier;
+
+            float scaled = blockInput[thread_idx] * scaler;
+            vec[global_idx] = scaled;
+        }
+    }
+}
+
+

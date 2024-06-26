@@ -21,6 +21,7 @@ add_subdirectory(30_device_function)
 
 if (OCCA_CLANG_BASED_TRANSPILER)
   add_subdirectory(31_oklt_v3_moving_avg)
+  add_subdirectory(32_oklt_v3_external_intrinsics)
 endif()
 # Don't force-compile OpenGL examples
 # add_subdirectory(16_finite_difference)

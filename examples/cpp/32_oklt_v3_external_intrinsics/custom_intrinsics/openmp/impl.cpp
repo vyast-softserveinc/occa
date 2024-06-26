@@ -1,0 +1,22 @@
+#include <cstring>
+
+// Pipeline Primitives wrappers
+[[maybe_unused]]
+inline void okl_memcpy_async(void* dst_shared,
+                 const void*  src_global,
+                 size_t size_and_align,
+                 size_t zfill = 0)
+{
+    std::memcpy(dst_shared, src_global, size_and_align - zfill);
+    if(zfill) {
+        std::memset(&(((char *)dst_shared)[size_and_align - zfill]), 0, zfill);
+    }
+}
+
+[[maybe_unused]]
+inline void okl_pipeline_commit()
+{}
+
+[[maybe_unused]]
+void okl_pipeline_wait_prior(size_t)
+{}
