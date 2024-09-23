@@ -72,7 +72,13 @@ private:
         };
         @inner(0) for(int thread_idx = 0; thread_idx < THREADS_PER_BLOCK; ++thread_idx) {
             ma.syncCopyFrom(inputData, block_idx, thread_idx);
+        }
+            
+        @inner(0) for(int thread_idx = 0; thread_idx < THREADS_PER_BLOCK; ++thread_idx) {
             ma.process(thread_idx);
+        }
+
+        @inner(0) for(int thread_idx = 0; thread_idx < THREADS_PER_BLOCK; ++thread_idx) {
             ma.syncCopyTo(outputData, block_idx, thread_idx);
         }
     }
