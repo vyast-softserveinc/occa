@@ -11,6 +11,7 @@ namespace occa {
     const dtype_t char_("char", sizeof(char), true);
     const dtype_t short_("short", sizeof(short), true);
     const dtype_t int_("int", sizeof(int), true);
+    const dtype_t uint_("unsigned int", sizeof(unsigned int), true);
     const dtype_t long_("long", sizeof(long), true);
     const dtype_t ulong_("unsigned long", sizeof(unsigned long), true);
     const dtype_t float_("float", sizeof(float), true);
