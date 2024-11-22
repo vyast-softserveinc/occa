@@ -10,18 +10,19 @@
 
 ### Optional
 
- - Fortan 90 compiler
+ - Fortran 90 compiler
  - CUDA 9 or later
  - HIP 3.5 or later
  - SYCL 2020 or later
  - OpenCL 2.0 or later
  - OpenMP 4.0 or later
+ - Support Clang based transpiler
 
 ## Linux
 
 ### **Configure**
 
-OCCA uses the [CMake] build system. For convenience, the shell script `configure-cmake.sh` has been provided to drive the Cmake build. The following table gives a list of build parameters which are set in the file. To override the default value, it is only necessary to assign the variable an alternate value at the top of the script or at the commandline.
+OCCA uses the [CMake] build system. For convenience, the shell script `configure-cmake.sh` has been provided to drive the CMake build. The following table gives a list of build parameters which are set in the file. To override the default value, it is only necessary to assign the variable an alternate value at the top of the script or at the commandline.
 
 Example
 ```shell
@@ -46,6 +47,7 @@ $ CC=clang CXX=clang++ OCCA_ENABLE_OPENMP="OFF" ./configure-cmake.sh
 | OCCA_ENABLE_TESTS | Build OCCA's test harness | `ON` |
 | OCCA_ENABLE_EXAMPLES | Build OCCA examples | `ON` |
 | OCCA_ENABLE_FORTRAN | Build the Fortran language bindings | `OFF`|
+| OCCA_CLANG_BASED_TRANSPILER | Build clang based transpiler that support C++ in OKL | `OFF`|
 | FC | Fortran 90 compiler | `gfortran` |
 | FFLAGS | Fortran compiler flags | *empty* |
 
@@ -67,7 +69,25 @@ After CMake configuration is complete, OCCA can be built with the command
 $ cmake --build build --parallel <number-of-threads>
 ```
 
-When cross compiling for a different platform, the targeted hardware doesn't need to be available; however all dependencies&mdash;e.g., headers, libraries&mdash;must be present. Commonly this is the case for large HPC systems, where code is compiled on login nodes and run on compute nodes.  
+When cross compiling for a different platform, the targeted hardware doesn't need to be available; however all dependencies&mdash;e.g., headers, libraries&mdash;must be present. Commonly this is the case for large HPC systems, where code is compiled on login nodes and run on compute nodes.
+
+
+#### Building with Clang transpiler
+
+occa-transpiler repository can be found in [libocca/occa-transpiler](https://github.com/libocca/occa-transpiler/).
+Please refer [occa-transpiler README](https://github.com/libocca/occa-transpiler/blob/main/README.md) for instructions on how to
+build and install the occa-transpiler.
+Then you can use the following commands to install OCCA with occa-transpiler enabled.
+Please replace `<occa-transpiler install dir>` by the root directory of your
+occa-transpiler installation.
+
+```shell
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release -DOCCA_CLANG_BASED_TRANSPILER=ON -DCMAKE_PREFIX_PATH=<occa-transpiler install dir>/lib/cmake ..
+$ cmake --build . --parallel <number-of-threads> 
+$ cmake --install . --prefix install
+```
 
 ### Testing
 

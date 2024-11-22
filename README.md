@@ -42,12 +42,13 @@ Mission critical computational science and engineering applications from the pub
 
 ### Optional
 
- - Fortan 90 compiler
+ - Fortran 90 compiler
  - CUDA 9 or later
  - HIP 4.2 or later
  - SYCL 2020 or later
  - OpenCL 2.0 or later
  - OpenMP 4.0 or later
+ - C++ support for OKL with clang based transpiler [new-okl-transpiler](https://github.com/libocca/occa-transpiler)
 
 ## Build, Test, Install
 
@@ -66,7 +67,6 @@ $ cmake --install build --prefix install
 ```
 
 If dependencies are installed in a non-standard location, set the corresponding [environment variable](INSTALL.md#dependency-paths) to this path. 
-
 
 ## Use
 

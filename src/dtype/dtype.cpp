@@ -413,6 +413,8 @@ namespace occa {
       dtypeMap["long"]   = &dtype::long_;
       dtypeMap["float"]  = &dtype::float_;
       dtypeMap["double"] = &dtype::double_;
+      dtypeMap["unsigned long"] = &dtype::ulong_;
+      dtypeMap["unsigned int"]  = &dtype::uint_;
 
       // Sized primitives
       dtypeMap["int8"]   = dtype::get<int8_t>().ref;

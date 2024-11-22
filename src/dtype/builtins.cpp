@@ -11,7 +11,9 @@ namespace occa {
     const dtype_t char_("char", sizeof(char), true);
     const dtype_t short_("short", sizeof(short), true);
     const dtype_t int_("int", sizeof(int), true);
+    const dtype_t uint_("unsigned int", sizeof(unsigned int), true);
     const dtype_t long_("long", sizeof(long), true);
+    const dtype_t ulong_("unsigned long", sizeof(unsigned long), true);
     const dtype_t float_("float", sizeof(float), true);
     const dtype_t double_("double", sizeof(double), true);
 
@@ -111,7 +113,7 @@ namespace occa {
     }
 
     template <> dtype_t get<unsigned long>() {
-      return long_;
+      return ulong_;
     }
 
     template <> dtype_t get<long long>() {
